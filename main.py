@@ -21,6 +21,10 @@ if 'plain' not in st.session_state:
     st.session_state['plain'] = ''
 if 'encoded' not in st.session_state:
     st.session_state['encoded'] = ''
+def handle_encode():
+    st.session_state['encoded'] = engine.encode_text(st.session_state['plain'])
+def handle_decode():
+    st.session_state['plain'] = engine.decode_text(st.session_state['encoded'])
 
 # Titre de l'application
 st.title(
@@ -32,7 +36,9 @@ st.title(
 with st.container(horizontal=True, horizontal_alignment="right"):
     st.button(
         label="Règles de chiffrement",
-        icon=":material/policy:"
+        icon=":material/policy:",
+        help="Fonctionnalité disponible ultérieurement",
+        disabled=True
     )
 
 # Mise en page
@@ -46,7 +52,6 @@ with container.container(border=True):
     )
     st.text_area(
         label="",
-        value=st.session_state['plain'],
         key='plain',
         label_visibility="hidden"
     )
@@ -54,18 +59,18 @@ with container.container(border=True):
 # Boutons d'encodage et de décodage
 with container.container(width="content"):
     st.space(size="large")
-    if st.button(
+    st.button(
         label="Encoder",
         icon=":material/keyboard_double_arrow_right:",
-        key='encode_btn'
-    ):
-        st.session_state['encoded'] = engine.encode_text(st.session_state.get('plain', ''))
-    if st.button(
+        key='encode_btn',
+        on_click=handle_encode
+    )
+    st.button(
         label="Décoder",
         icon=":material/keyboard_double_arrow_left:",
-        key='decode_btn'
-    ):
-        st.session_state['plain'] = engine.decode_text(st.session_state.get('encoded', ''))
+        key='decode_btn',
+        on_click=handle_decode
+    )
 
 # Zone de texte encodé
 with container.container(border=True):
@@ -75,7 +80,6 @@ with container.container(border=True):
     )
     st.text_area(
         label="",
-        value=st.session_state['encoded'],
         key='encoded',
         label_visibility="hidden"
 )
